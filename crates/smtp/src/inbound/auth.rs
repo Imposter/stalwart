@@ -57,7 +57,7 @@ impl<T: SessionStream> Session<T> {
         if response.is_empty() {
             match (token.mechanism, &token.credentials) {
                 (AUTH_PLAIN | AUTH_XOAUTH2 | AUTH_OAUTHBEARER, _) => {
-                    self.write(b"334 Go ahead.\r\n").await?;
+                    self.write(b"334 \r\n").await?;
                     return Ok(true);
                 }
                 (AUTH_LOGIN, Credentials::Plain { username, secret }) => {
@@ -143,7 +143,7 @@ impl<T: SessionStream> Session<T> {
                         trc::EventType::Auth(trc::AuthEvent::MissingTotp) => {
                             return self
                             .auth_error(
-                                b"334 5.7.8 Missing TOTP token, try with 'secret$totp_code'.\r\n",
+                                b"535 5.7.8 Missing TOTP token, try with 'secret$totp_code'.\r\n",
                             )
                             .await;
                         }
